@@ -22,7 +22,7 @@ import (
 
 // GetRolesForUser gets the roles that a user has.
 func (s *Server) GetRolesForUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.ArrayReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.ArrayReply{}, err
 	}
@@ -34,7 +34,7 @@ func (s *Server) GetRolesForUser(ctx context.Context, in *pb.UserRoleRequest) (*
 
 // GetUsersForRole gets the users that has a role.
 func (s *Server) GetUsersForRole(ctx context.Context, in *pb.UserRoleRequest) (*pb.ArrayReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.ArrayReply{}, err
 	}
@@ -46,7 +46,7 @@ func (s *Server) GetUsersForRole(ctx context.Context, in *pb.UserRoleRequest) (*
 
 // HasRoleForUser determines whether a user has a role.
 func (s *Server) HasRoleForUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -68,7 +68,7 @@ func (s *Server) HasRoleForUser(ctx context.Context, in *pb.UserRoleRequest) (*p
 // AddRoleForUser adds a role for a user.
 // Returns false if the user already has the role (aka not affected).
 func (s *Server) AddRoleForUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -80,7 +80,7 @@ func (s *Server) AddRoleForUser(ctx context.Context, in *pb.UserRoleRequest) (*p
 // DeleteRoleForUser deletes a role for a user.
 // Returns false if the user does not have the role (aka not affected).
 func (s *Server) DeleteRoleForUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -92,7 +92,7 @@ func (s *Server) DeleteRoleForUser(ctx context.Context, in *pb.UserRoleRequest) 
 // DeleteRolesForUser deletes all roles for a user.
 // Returns false if the user does not have any roles (aka not affected).
 func (s *Server) DeleteRolesForUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -104,7 +104,7 @@ func (s *Server) DeleteRolesForUser(ctx context.Context, in *pb.UserRoleRequest)
 // DeleteUser deletes a user.
 // Returns false if the user does not exist (aka not affected).
 func (s *Server) DeleteUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -115,7 +115,7 @@ func (s *Server) DeleteUser(ctx context.Context, in *pb.UserRoleRequest) (*pb.Bo
 
 // DeleteRole deletes a role.
 func (s *Server) DeleteRole(ctx context.Context, in *pb.UserRoleRequest) (*pb.EmptyReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.EmptyReply{}, err
 	}
@@ -127,7 +127,7 @@ func (s *Server) DeleteRole(ctx context.Context, in *pb.UserRoleRequest) (*pb.Em
 // DeletePermission deletes a permission.
 // Returns false if the permission does not exist (aka not affected).
 func (s *Server) DeletePermission(ctx context.Context, in *pb.PermissionRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -139,7 +139,7 @@ func (s *Server) DeletePermission(ctx context.Context, in *pb.PermissionRequest)
 // AddPermissionForUser adds a permission for a user or role.
 // Returns false if the user or role already has the permission (aka not affected).
 func (s *Server) AddPermissionForUser(ctx context.Context, in *pb.PermissionRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -151,7 +151,7 @@ func (s *Server) AddPermissionForUser(ctx context.Context, in *pb.PermissionRequ
 // DeletePermissionForUser deletes a permission for a user or role.
 // Returns false if the user or role does not have the permission (aka not affected).
 func (s *Server) DeletePermissionForUser(ctx context.Context, in *pb.PermissionRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -163,7 +163,7 @@ func (s *Server) DeletePermissionForUser(ctx context.Context, in *pb.PermissionR
 // DeletePermissionsForUser deletes permissions for a user or role.
 // Returns false if the user or role does not have any permissions (aka not affected).
 func (s *Server) DeletePermissionsForUser(ctx context.Context, in *pb.PermissionRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}
@@ -174,7 +174,7 @@ func (s *Server) DeletePermissionsForUser(ctx context.Context, in *pb.Permission
 
 // GetPermissionsForUser gets permissions for a user or role.
 func (s *Server) GetPermissionsForUser(ctx context.Context, in *pb.PermissionRequest) (*pb.Array2DReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.Array2DReply{}, err
 	}
@@ -184,7 +184,7 @@ func (s *Server) GetPermissionsForUser(ctx context.Context, in *pb.PermissionReq
 
 // HasPermissionForUser determines whether a user has a permission.
 func (s *Server) HasPermissionForUser(ctx context.Context, in *pb.PermissionRequest) (*pb.BoolReply, error) {
-	e, err := s.getEnforcer(int(in.EnforcerHandler))
+	e, err := s.getEnforcer(in.EnforcerHandler)
 	if err != nil {
 		return &pb.BoolReply{}, err
 	}

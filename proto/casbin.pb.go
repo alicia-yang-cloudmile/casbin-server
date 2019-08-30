@@ -3,14 +3,13 @@
 
 package proto
 
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
+
 import (
-	context "context"
-	fmt "fmt"
-	proto "github.com/golang/protobuf/proto"
+	context "golang.org/x/net/context"
 	grpc "google.golang.org/grpc"
-	codes "google.golang.org/grpc/codes"
-	status "google.golang.org/grpc/status"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -22,11 +21,12 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type NewEnforcerRequest struct {
-	ModelText            string   `protobuf:"bytes,1,opt,name=modelText,proto3" json:"modelText,omitempty"`
-	AdapterHandle        int32    `protobuf:"varint,2,opt,name=adapterHandle,proto3" json:"adapterHandle,omitempty"`
+	ModelText            string   `protobuf:"bytes,1,opt,name=modelText" json:"modelText,omitempty"`
+	AdapterHandle        string   `protobuf:"bytes,2,opt,name=adapterHandle" json:"adapterHandle,omitempty"`
+	EnforcerName         string   `protobuf:"bytes,3,opt,name=enforcerName" json:"enforcerName,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -36,17 +36,16 @@ func (m *NewEnforcerRequest) Reset()         { *m = NewEnforcerRequest{} }
 func (m *NewEnforcerRequest) String() string { return proto.CompactTextString(m) }
 func (*NewEnforcerRequest) ProtoMessage()    {}
 func (*NewEnforcerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{0}
+	return fileDescriptor_casbin_1e7077875394d387, []int{0}
 }
-
 func (m *NewEnforcerRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewEnforcerRequest.Unmarshal(m, b)
 }
 func (m *NewEnforcerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewEnforcerRequest.Marshal(b, m, deterministic)
 }
-func (m *NewEnforcerRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewEnforcerRequest.Merge(m, src)
+func (dst *NewEnforcerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewEnforcerRequest.Merge(dst, src)
 }
 func (m *NewEnforcerRequest) XXX_Size() int {
 	return xxx_messageInfo_NewEnforcerRequest.Size(m)
@@ -64,15 +63,22 @@ func (m *NewEnforcerRequest) GetModelText() string {
 	return ""
 }
 
-func (m *NewEnforcerRequest) GetAdapterHandle() int32 {
+func (m *NewEnforcerRequest) GetAdapterHandle() string {
 	if m != nil {
 		return m.AdapterHandle
 	}
-	return 0
+	return ""
+}
+
+func (m *NewEnforcerRequest) GetEnforcerName() string {
+	if m != nil {
+		return m.EnforcerName
+	}
+	return ""
 }
 
 type NewEnforcerReply struct {
-	Handler              int32    `protobuf:"varint,1,opt,name=handler,proto3" json:"handler,omitempty"`
+	Handler              string   `protobuf:"bytes,1,opt,name=handler" json:"handler,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -82,17 +88,16 @@ func (m *NewEnforcerReply) Reset()         { *m = NewEnforcerReply{} }
 func (m *NewEnforcerReply) String() string { return proto.CompactTextString(m) }
 func (*NewEnforcerReply) ProtoMessage()    {}
 func (*NewEnforcerReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{1}
+	return fileDescriptor_casbin_1e7077875394d387, []int{1}
 }
-
 func (m *NewEnforcerReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewEnforcerReply.Unmarshal(m, b)
 }
 func (m *NewEnforcerReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewEnforcerReply.Marshal(b, m, deterministic)
 }
-func (m *NewEnforcerReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewEnforcerReply.Merge(m, src)
+func (dst *NewEnforcerReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewEnforcerReply.Merge(dst, src)
 }
 func (m *NewEnforcerReply) XXX_Size() int {
 	return xxx_messageInfo_NewEnforcerReply.Size(m)
@@ -103,18 +108,19 @@ func (m *NewEnforcerReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NewEnforcerReply proto.InternalMessageInfo
 
-func (m *NewEnforcerReply) GetHandler() int32 {
+func (m *NewEnforcerReply) GetHandler() string {
 	if m != nil {
 		return m.Handler
 	}
-	return 0
+	return ""
 }
 
 type NewAdapterRequest struct {
-	AdapterName          string   `protobuf:"bytes,1,opt,name=adapterName,proto3" json:"adapterName,omitempty"`
-	DriverName           string   `protobuf:"bytes,2,opt,name=driverName,proto3" json:"driverName,omitempty"`
-	ConnectString        string   `protobuf:"bytes,3,opt,name=connectString,proto3" json:"connectString,omitempty"`
-	DbSpecified          bool     `protobuf:"varint,4,opt,name=dbSpecified,proto3" json:"dbSpecified,omitempty"`
+	AdapterName          string   `protobuf:"bytes,1,opt,name=adapterName" json:"adapterName,omitempty"`
+	DriverName           string   `protobuf:"bytes,2,opt,name=driverName" json:"driverName,omitempty"`
+	ConnectString        string   `protobuf:"bytes,3,opt,name=connectString" json:"connectString,omitempty"`
+	DbSpecified          bool     `protobuf:"varint,4,opt,name=dbSpecified" json:"dbSpecified,omitempty"`
+	TablePrefix          string   `protobuf:"bytes,5,opt,name=tablePrefix" json:"tablePrefix,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -124,17 +130,16 @@ func (m *NewAdapterRequest) Reset()         { *m = NewAdapterRequest{} }
 func (m *NewAdapterRequest) String() string { return proto.CompactTextString(m) }
 func (*NewAdapterRequest) ProtoMessage()    {}
 func (*NewAdapterRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{2}
+	return fileDescriptor_casbin_1e7077875394d387, []int{2}
 }
-
 func (m *NewAdapterRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewAdapterRequest.Unmarshal(m, b)
 }
 func (m *NewAdapterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewAdapterRequest.Marshal(b, m, deterministic)
 }
-func (m *NewAdapterRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewAdapterRequest.Merge(m, src)
+func (dst *NewAdapterRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewAdapterRequest.Merge(dst, src)
 }
 func (m *NewAdapterRequest) XXX_Size() int {
 	return xxx_messageInfo_NewAdapterRequest.Size(m)
@@ -173,8 +178,15 @@ func (m *NewAdapterRequest) GetDbSpecified() bool {
 	return false
 }
 
+func (m *NewAdapterRequest) GetTablePrefix() string {
+	if m != nil {
+		return m.TablePrefix
+	}
+	return ""
+}
+
 type NewAdapterReply struct {
-	Handler              int32    `protobuf:"varint,1,opt,name=handler,proto3" json:"handler,omitempty"`
+	Handler              string   `protobuf:"bytes,1,opt,name=handler" json:"handler,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -184,17 +196,16 @@ func (m *NewAdapterReply) Reset()         { *m = NewAdapterReply{} }
 func (m *NewAdapterReply) String() string { return proto.CompactTextString(m) }
 func (*NewAdapterReply) ProtoMessage()    {}
 func (*NewAdapterReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{3}
+	return fileDescriptor_casbin_1e7077875394d387, []int{3}
 }
-
 func (m *NewAdapterReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_NewAdapterReply.Unmarshal(m, b)
 }
 func (m *NewAdapterReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_NewAdapterReply.Marshal(b, m, deterministic)
 }
-func (m *NewAdapterReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NewAdapterReply.Merge(m, src)
+func (dst *NewAdapterReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NewAdapterReply.Merge(dst, src)
 }
 func (m *NewAdapterReply) XXX_Size() int {
 	return xxx_messageInfo_NewAdapterReply.Size(m)
@@ -205,16 +216,16 @@ func (m *NewAdapterReply) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NewAdapterReply proto.InternalMessageInfo
 
-func (m *NewAdapterReply) GetHandler() int32 {
+func (m *NewAdapterReply) GetHandler() string {
 	if m != nil {
 		return m.Handler
 	}
-	return 0
+	return ""
 }
 
 type EnforceRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	Params               []string `protobuf:"bytes,2,rep,name=params,proto3" json:"params,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	Params               []string `protobuf:"bytes,2,rep,name=params" json:"params,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -224,17 +235,16 @@ func (m *EnforceRequest) Reset()         { *m = EnforceRequest{} }
 func (m *EnforceRequest) String() string { return proto.CompactTextString(m) }
 func (*EnforceRequest) ProtoMessage()    {}
 func (*EnforceRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{4}
+	return fileDescriptor_casbin_1e7077875394d387, []int{4}
 }
-
 func (m *EnforceRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EnforceRequest.Unmarshal(m, b)
 }
 func (m *EnforceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EnforceRequest.Marshal(b, m, deterministic)
 }
-func (m *EnforceRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EnforceRequest.Merge(m, src)
+func (dst *EnforceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EnforceRequest.Merge(dst, src)
 }
 func (m *EnforceRequest) XXX_Size() int {
 	return xxx_messageInfo_EnforceRequest.Size(m)
@@ -245,11 +255,11 @@ func (m *EnforceRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EnforceRequest proto.InternalMessageInfo
 
-func (m *EnforceRequest) GetEnforcerHandler() int32 {
+func (m *EnforceRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *EnforceRequest) GetParams() []string {
@@ -260,7 +270,7 @@ func (m *EnforceRequest) GetParams() []string {
 }
 
 type BoolReply struct {
-	Res                  bool     `protobuf:"varint,1,opt,name=res,proto3" json:"res,omitempty"`
+	Res                  bool     `protobuf:"varint,1,opt,name=res" json:"res,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -270,17 +280,16 @@ func (m *BoolReply) Reset()         { *m = BoolReply{} }
 func (m *BoolReply) String() string { return proto.CompactTextString(m) }
 func (*BoolReply) ProtoMessage()    {}
 func (*BoolReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{5}
+	return fileDescriptor_casbin_1e7077875394d387, []int{5}
 }
-
 func (m *BoolReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BoolReply.Unmarshal(m, b)
 }
 func (m *BoolReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_BoolReply.Marshal(b, m, deterministic)
 }
-func (m *BoolReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BoolReply.Merge(m, src)
+func (dst *BoolReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BoolReply.Merge(dst, src)
 }
 func (m *BoolReply) XXX_Size() int {
 	return xxx_messageInfo_BoolReply.Size(m)
@@ -299,7 +308,7 @@ func (m *BoolReply) GetRes() bool {
 }
 
 type EmptyRequest struct {
-	Handler              int32    `protobuf:"varint,1,opt,name=handler,proto3" json:"handler,omitempty"`
+	Handler              string   `protobuf:"bytes,1,opt,name=handler" json:"handler,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -309,17 +318,16 @@ func (m *EmptyRequest) Reset()         { *m = EmptyRequest{} }
 func (m *EmptyRequest) String() string { return proto.CompactTextString(m) }
 func (*EmptyRequest) ProtoMessage()    {}
 func (*EmptyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{6}
+	return fileDescriptor_casbin_1e7077875394d387, []int{6}
 }
-
 func (m *EmptyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EmptyRequest.Unmarshal(m, b)
 }
 func (m *EmptyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EmptyRequest.Marshal(b, m, deterministic)
 }
-func (m *EmptyRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EmptyRequest.Merge(m, src)
+func (dst *EmptyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EmptyRequest.Merge(dst, src)
 }
 func (m *EmptyRequest) XXX_Size() int {
 	return xxx_messageInfo_EmptyRequest.Size(m)
@@ -330,11 +338,11 @@ func (m *EmptyRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_EmptyRequest proto.InternalMessageInfo
 
-func (m *EmptyRequest) GetHandler() int32 {
+func (m *EmptyRequest) GetHandler() string {
 	if m != nil {
 		return m.Handler
 	}
-	return 0
+	return ""
 }
 
 type EmptyReply struct {
@@ -347,17 +355,16 @@ func (m *EmptyReply) Reset()         { *m = EmptyReply{} }
 func (m *EmptyReply) String() string { return proto.CompactTextString(m) }
 func (*EmptyReply) ProtoMessage()    {}
 func (*EmptyReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{7}
+	return fileDescriptor_casbin_1e7077875394d387, []int{7}
 }
-
 func (m *EmptyReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_EmptyReply.Unmarshal(m, b)
 }
 func (m *EmptyReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_EmptyReply.Marshal(b, m, deterministic)
 }
-func (m *EmptyReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EmptyReply.Merge(m, src)
+func (dst *EmptyReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EmptyReply.Merge(dst, src)
 }
 func (m *EmptyReply) XXX_Size() int {
 	return xxx_messageInfo_EmptyReply.Size(m)
@@ -369,9 +376,9 @@ func (m *EmptyReply) XXX_DiscardUnknown() {
 var xxx_messageInfo_EmptyReply proto.InternalMessageInfo
 
 type PolicyRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	PType                string   `protobuf:"bytes,2,opt,name=pType,proto3" json:"pType,omitempty"`
-	Params               []string `protobuf:"bytes,3,rep,name=params,proto3" json:"params,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	PType                string   `protobuf:"bytes,2,opt,name=pType" json:"pType,omitempty"`
+	Params               []string `protobuf:"bytes,3,rep,name=params" json:"params,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -381,17 +388,16 @@ func (m *PolicyRequest) Reset()         { *m = PolicyRequest{} }
 func (m *PolicyRequest) String() string { return proto.CompactTextString(m) }
 func (*PolicyRequest) ProtoMessage()    {}
 func (*PolicyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{8}
+	return fileDescriptor_casbin_1e7077875394d387, []int{8}
 }
-
 func (m *PolicyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PolicyRequest.Unmarshal(m, b)
 }
 func (m *PolicyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_PolicyRequest.Marshal(b, m, deterministic)
 }
-func (m *PolicyRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PolicyRequest.Merge(m, src)
+func (dst *PolicyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PolicyRequest.Merge(dst, src)
 }
 func (m *PolicyRequest) XXX_Size() int {
 	return xxx_messageInfo_PolicyRequest.Size(m)
@@ -402,11 +408,11 @@ func (m *PolicyRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PolicyRequest proto.InternalMessageInfo
 
-func (m *PolicyRequest) GetEnforcerHandler() int32 {
+func (m *PolicyRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *PolicyRequest) GetPType() string {
@@ -424,8 +430,8 @@ func (m *PolicyRequest) GetParams() []string {
 }
 
 type SimpleGetRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	PType                string   `protobuf:"bytes,2,opt,name=pType,proto3" json:"pType,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	PType                string   `protobuf:"bytes,2,opt,name=pType" json:"pType,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -435,17 +441,16 @@ func (m *SimpleGetRequest) Reset()         { *m = SimpleGetRequest{} }
 func (m *SimpleGetRequest) String() string { return proto.CompactTextString(m) }
 func (*SimpleGetRequest) ProtoMessage()    {}
 func (*SimpleGetRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{9}
+	return fileDescriptor_casbin_1e7077875394d387, []int{9}
 }
-
 func (m *SimpleGetRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_SimpleGetRequest.Unmarshal(m, b)
 }
 func (m *SimpleGetRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_SimpleGetRequest.Marshal(b, m, deterministic)
 }
-func (m *SimpleGetRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SimpleGetRequest.Merge(m, src)
+func (dst *SimpleGetRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SimpleGetRequest.Merge(dst, src)
 }
 func (m *SimpleGetRequest) XXX_Size() int {
 	return xxx_messageInfo_SimpleGetRequest.Size(m)
@@ -456,11 +461,11 @@ func (m *SimpleGetRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_SimpleGetRequest proto.InternalMessageInfo
 
-func (m *SimpleGetRequest) GetEnforcerHandler() int32 {
+func (m *SimpleGetRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *SimpleGetRequest) GetPType() string {
@@ -471,7 +476,7 @@ func (m *SimpleGetRequest) GetPType() string {
 }
 
 type ArrayReply struct {
-	Array                []string `protobuf:"bytes,1,rep,name=array,proto3" json:"array,omitempty"`
+	Array                []string `protobuf:"bytes,1,rep,name=array" json:"array,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -481,17 +486,16 @@ func (m *ArrayReply) Reset()         { *m = ArrayReply{} }
 func (m *ArrayReply) String() string { return proto.CompactTextString(m) }
 func (*ArrayReply) ProtoMessage()    {}
 func (*ArrayReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{10}
+	return fileDescriptor_casbin_1e7077875394d387, []int{10}
 }
-
 func (m *ArrayReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_ArrayReply.Unmarshal(m, b)
 }
 func (m *ArrayReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_ArrayReply.Marshal(b, m, deterministic)
 }
-func (m *ArrayReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ArrayReply.Merge(m, src)
+func (dst *ArrayReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ArrayReply.Merge(dst, src)
 }
 func (m *ArrayReply) XXX_Size() int {
 	return xxx_messageInfo_ArrayReply.Size(m)
@@ -510,10 +514,10 @@ func (m *ArrayReply) GetArray() []string {
 }
 
 type FilteredPolicyRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	PType                string   `protobuf:"bytes,2,opt,name=pType,proto3" json:"pType,omitempty"`
-	FieldIndex           int32    `protobuf:"varint,3,opt,name=fieldIndex,proto3" json:"fieldIndex,omitempty"`
-	FieldValues          []string `protobuf:"bytes,4,rep,name=fieldValues,proto3" json:"fieldValues,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	PType                string   `protobuf:"bytes,2,opt,name=pType" json:"pType,omitempty"`
+	FieldIndex           int32    `protobuf:"varint,3,opt,name=fieldIndex" json:"fieldIndex,omitempty"`
+	FieldValues          []string `protobuf:"bytes,4,rep,name=fieldValues" json:"fieldValues,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -523,17 +527,16 @@ func (m *FilteredPolicyRequest) Reset()         { *m = FilteredPolicyRequest{} }
 func (m *FilteredPolicyRequest) String() string { return proto.CompactTextString(m) }
 func (*FilteredPolicyRequest) ProtoMessage()    {}
 func (*FilteredPolicyRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{11}
+	return fileDescriptor_casbin_1e7077875394d387, []int{11}
 }
-
 func (m *FilteredPolicyRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_FilteredPolicyRequest.Unmarshal(m, b)
 }
 func (m *FilteredPolicyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_FilteredPolicyRequest.Marshal(b, m, deterministic)
 }
-func (m *FilteredPolicyRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_FilteredPolicyRequest.Merge(m, src)
+func (dst *FilteredPolicyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_FilteredPolicyRequest.Merge(dst, src)
 }
 func (m *FilteredPolicyRequest) XXX_Size() int {
 	return xxx_messageInfo_FilteredPolicyRequest.Size(m)
@@ -544,11 +547,11 @@ func (m *FilteredPolicyRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_FilteredPolicyRequest proto.InternalMessageInfo
 
-func (m *FilteredPolicyRequest) GetEnforcerHandler() int32 {
+func (m *FilteredPolicyRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *FilteredPolicyRequest) GetPType() string {
@@ -573,9 +576,9 @@ func (m *FilteredPolicyRequest) GetFieldValues() []string {
 }
 
 type UserRoleRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	User                 string   `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
-	Role                 string   `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	User                 string   `protobuf:"bytes,2,opt,name=user" json:"user,omitempty"`
+	Role                 string   `protobuf:"bytes,3,opt,name=role" json:"role,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -585,17 +588,16 @@ func (m *UserRoleRequest) Reset()         { *m = UserRoleRequest{} }
 func (m *UserRoleRequest) String() string { return proto.CompactTextString(m) }
 func (*UserRoleRequest) ProtoMessage()    {}
 func (*UserRoleRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{12}
+	return fileDescriptor_casbin_1e7077875394d387, []int{12}
 }
-
 func (m *UserRoleRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_UserRoleRequest.Unmarshal(m, b)
 }
 func (m *UserRoleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_UserRoleRequest.Marshal(b, m, deterministic)
 }
-func (m *UserRoleRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UserRoleRequest.Merge(m, src)
+func (dst *UserRoleRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserRoleRequest.Merge(dst, src)
 }
 func (m *UserRoleRequest) XXX_Size() int {
 	return xxx_messageInfo_UserRoleRequest.Size(m)
@@ -606,11 +608,11 @@ func (m *UserRoleRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UserRoleRequest proto.InternalMessageInfo
 
-func (m *UserRoleRequest) GetEnforcerHandler() int32 {
+func (m *UserRoleRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *UserRoleRequest) GetUser() string {
@@ -628,9 +630,9 @@ func (m *UserRoleRequest) GetRole() string {
 }
 
 type PermissionRequest struct {
-	EnforcerHandler      int32    `protobuf:"varint,1,opt,name=enforcerHandler,proto3" json:"enforcerHandler,omitempty"`
-	User                 string   `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
-	Permissions          []string `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions,omitempty"`
+	EnforcerHandler      string   `protobuf:"bytes,1,opt,name=enforcerHandler" json:"enforcerHandler,omitempty"`
+	User                 string   `protobuf:"bytes,2,opt,name=user" json:"user,omitempty"`
+	Permissions          []string `protobuf:"bytes,3,rep,name=permissions" json:"permissions,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -640,17 +642,16 @@ func (m *PermissionRequest) Reset()         { *m = PermissionRequest{} }
 func (m *PermissionRequest) String() string { return proto.CompactTextString(m) }
 func (*PermissionRequest) ProtoMessage()    {}
 func (*PermissionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{13}
+	return fileDescriptor_casbin_1e7077875394d387, []int{13}
 }
-
 func (m *PermissionRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_PermissionRequest.Unmarshal(m, b)
 }
 func (m *PermissionRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_PermissionRequest.Marshal(b, m, deterministic)
 }
-func (m *PermissionRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PermissionRequest.Merge(m, src)
+func (dst *PermissionRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PermissionRequest.Merge(dst, src)
 }
 func (m *PermissionRequest) XXX_Size() int {
 	return xxx_messageInfo_PermissionRequest.Size(m)
@@ -661,11 +662,11 @@ func (m *PermissionRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_PermissionRequest proto.InternalMessageInfo
 
-func (m *PermissionRequest) GetEnforcerHandler() int32 {
+func (m *PermissionRequest) GetEnforcerHandler() string {
 	if m != nil {
 		return m.EnforcerHandler
 	}
-	return 0
+	return ""
 }
 
 func (m *PermissionRequest) GetUser() string {
@@ -683,7 +684,7 @@ func (m *PermissionRequest) GetPermissions() []string {
 }
 
 type Array2DReply struct {
-	D2                   []*Array2DReplyD `protobuf:"bytes,1,rep,name=d2,proto3" json:"d2,omitempty"`
+	D2                   []*Array2DReplyD `protobuf:"bytes,1,rep,name=d2" json:"d2,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
 	XXX_unrecognized     []byte           `json:"-"`
 	XXX_sizecache        int32            `json:"-"`
@@ -693,17 +694,16 @@ func (m *Array2DReply) Reset()         { *m = Array2DReply{} }
 func (m *Array2DReply) String() string { return proto.CompactTextString(m) }
 func (*Array2DReply) ProtoMessage()    {}
 func (*Array2DReply) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{14}
+	return fileDescriptor_casbin_1e7077875394d387, []int{14}
 }
-
 func (m *Array2DReply) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Array2DReply.Unmarshal(m, b)
 }
 func (m *Array2DReply) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Array2DReply.Marshal(b, m, deterministic)
 }
-func (m *Array2DReply) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Array2DReply.Merge(m, src)
+func (dst *Array2DReply) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Array2DReply.Merge(dst, src)
 }
 func (m *Array2DReply) XXX_Size() int {
 	return xxx_messageInfo_Array2DReply.Size(m)
@@ -722,7 +722,7 @@ func (m *Array2DReply) GetD2() []*Array2DReplyD {
 }
 
 type Array2DReplyD struct {
-	D1                   []string `protobuf:"bytes,1,rep,name=d1,proto3" json:"d1,omitempty"`
+	D1                   []string `protobuf:"bytes,1,rep,name=d1" json:"d1,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -732,17 +732,16 @@ func (m *Array2DReplyD) Reset()         { *m = Array2DReplyD{} }
 func (m *Array2DReplyD) String() string { return proto.CompactTextString(m) }
 func (*Array2DReplyD) ProtoMessage()    {}
 func (*Array2DReplyD) Descriptor() ([]byte, []int) {
-	return fileDescriptor_df0f85ba9164bca5, []int{14, 0}
+	return fileDescriptor_casbin_1e7077875394d387, []int{14, 0}
 }
-
 func (m *Array2DReplyD) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Array2DReplyD.Unmarshal(m, b)
 }
 func (m *Array2DReplyD) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	return xxx_messageInfo_Array2DReplyD.Marshal(b, m, deterministic)
 }
-func (m *Array2DReplyD) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Array2DReplyD.Merge(m, src)
+func (dst *Array2DReplyD) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Array2DReplyD.Merge(dst, src)
 }
 func (m *Array2DReplyD) XXX_Size() int {
 	return xxx_messageInfo_Array2DReplyD.Size(m)
@@ -779,69 +778,6 @@ func init() {
 	proto.RegisterType((*Array2DReplyD)(nil), "proto.Array2DReply.d")
 }
 
-func init() { proto.RegisterFile("casbin.proto", fileDescriptor_df0f85ba9164bca5) }
-
-var fileDescriptor_df0f85ba9164bca5 = []byte{
-	// 907 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x51, 0x6f, 0xe3, 0x44,
-	0x10, 0xae, 0xd3, 0xa6, 0x77, 0xf9, 0x92, 0xb6, 0xc9, 0xa6, 0x17, 0xdc, 0xa8, 0x54, 0xc1, 0x02,
-	0x11, 0x09, 0x14, 0xe9, 0x02, 0xc7, 0xc1, 0x49, 0x27, 0x9a, 0x94, 0x92, 0x80, 0xb8, 0x5e, 0xe4,
-	0x5c, 0x11, 0xaf, 0xae, 0x77, 0x5a, 0x8c, 0x1c, 0xdb, 0xac, 0x9d, 0xbb, 0xe6, 0xa7, 0xf0, 0xc0,
-	0x03, 0xff, 0x14, 0x79, 0x6d, 0xa7, 0x76, 0x48, 0x4a, 0x9d, 0xe6, 0xc9, 0xde, 0xf1, 0xcc, 0xf7,
-	0xcd, 0xce, 0x7e, 0x33, 0x5e, 0x54, 0x4c, 0xc3, 0xbf, 0xb2, 0x9c, 0x8e, 0x27, 0xdc, 0xc0, 0x65,
-	0x45, 0xf9, 0xd0, 0x7e, 0x03, 0xbb, 0xa0, 0x0f, 0xe7, 0xce, 0xb5, 0x2b, 0x4c, 0x12, 0x3a, 0xfd,
-	0x39, 0x25, 0x3f, 0x60, 0xc7, 0x28, 0x4d, 0x5c, 0x4e, 0xf6, 0x3b, 0xba, 0x0d, 0x54, 0xa5, 0xa5,
-	0xb4, 0x4b, 0xfa, 0x9d, 0x81, 0x7d, 0x8a, 0x3d, 0x83, 0x1b, 0x5e, 0x40, 0x62, 0x68, 0x38, 0xdc,
-	0x26, 0xb5, 0xd0, 0x52, 0xda, 0x45, 0x3d, 0x6b, 0xd4, 0xbe, 0x44, 0x35, 0x83, 0xec, 0xd9, 0x33,
-	0xa6, 0xe2, 0xc9, 0xef, 0xf2, 0xab, 0x90, 0xa8, 0x45, 0x3d, 0x59, 0x6a, 0x7f, 0x2b, 0xa8, 0x5d,
-	0xd0, 0x87, 0x5e, 0x04, 0x91, 0xe4, 0xd1, 0x42, 0x39, 0x06, 0xbd, 0x30, 0x26, 0x14, 0x67, 0x92,
-	0x36, 0xb1, 0x13, 0x80, 0x0b, 0xeb, 0x7d, 0xec, 0x50, 0x90, 0x0e, 0x29, 0x4b, 0x98, 0xab, 0xe9,
-	0x3a, 0x0e, 0x99, 0xc1, 0x38, 0x10, 0x96, 0x73, 0xa3, 0x6e, 0x4b, 0x97, 0xac, 0x31, 0xe4, 0xe1,
-	0x57, 0x63, 0x8f, 0x4c, 0xeb, 0xda, 0x22, 0xae, 0xee, 0xb4, 0x94, 0xf6, 0x53, 0x3d, 0x6d, 0xd2,
-	0xbe, 0xc0, 0x41, 0x3a, 0xbd, 0xfb, 0x37, 0xa3, 0x63, 0x3f, 0xde, 0x77, 0xb2, 0x91, 0x36, 0x0e,
-	0x28, 0xae, 0xc4, 0x30, 0x13, 0xb3, 0x68, 0x66, 0x0d, 0xec, 0x7a, 0x86, 0x30, 0x26, 0xbe, 0x5a,
-	0x68, 0x6d, 0xb7, 0x4b, 0x7a, 0xbc, 0xd2, 0x3e, 0x46, 0xa9, 0xef, 0xba, 0x76, 0x44, 0x5d, 0xc5,
-	0xb6, 0x20, 0x5f, 0x42, 0x3c, 0xd5, 0xc3, 0x57, 0xad, 0x8d, 0xca, 0xf9, 0xc4, 0x0b, 0x66, 0x09,
-	0xe1, 0xea, 0xe4, 0x2a, 0x40, 0xec, 0xe9, 0xd9, 0x33, 0xed, 0x06, 0x7b, 0x23, 0xd7, 0xb6, 0xcc,
-	0x59, 0xfe, 0x4c, 0x0f, 0x51, 0xf4, 0xde, 0xcd, 0xbc, 0xa4, 0xea, 0xd1, 0x22, 0x95, 0xff, 0x76,
-	0x26, 0x7f, 0x1d, 0xd5, 0xb1, 0x35, 0xf1, 0x6c, 0x1a, 0x50, 0xb0, 0x21, 0x2e, 0x4d, 0x03, 0x7a,
-	0x42, 0x18, 0xd1, 0x56, 0x42, 0x1f, 0x23, 0x5c, 0xa9, 0x8a, 0x24, 0x8e, 0x16, 0xda, 0x5f, 0x0a,
-	0x9e, 0xfd, 0x68, 0xd9, 0x01, 0x09, 0xe2, 0x9b, 0xdd, 0xe9, 0x09, 0x70, 0x6d, 0x91, 0xcd, 0x7f,
-	0x72, 0x38, 0xdd, 0x4a, 0x5d, 0x15, 0xf5, 0x94, 0x25, 0x14, 0x95, 0x5c, 0xfd, 0x6a, 0xd8, 0x53,
-	0xf2, 0xd5, 0x1d, 0x99, 0x55, 0xda, 0xa4, 0x99, 0x38, 0xb8, 0xf4, 0x49, 0xe8, 0xae, 0xbd, 0x86,
-	0x50, 0x18, 0x76, 0xa6, 0x3e, 0x89, 0x38, 0x27, 0xf9, 0x1e, 0xda, 0x84, 0x6b, 0x53, 0x2c, 0x72,
-	0xf9, 0xae, 0xf9, 0xa8, 0x8d, 0x48, 0x4c, 0x2c, 0xdf, 0xb7, 0x5c, 0x67, 0x33, 0x34, 0x2d, 0x94,
-	0xbd, 0x39, 0x64, 0x72, 0xd0, 0x69, 0x93, 0xf6, 0x33, 0x2a, 0xf2, 0x64, 0xba, 0x3f, 0x44, 0x67,
-	0xf3, 0x19, 0x0a, 0xbc, 0x2b, 0x0f, 0xa6, 0xdc, 0x7d, 0x16, 0x4d, 0xa0, 0x4e, 0xda, 0xa1, 0xc3,
-	0xf5, 0x02, 0xef, 0x36, 0xeb, 0x50, 0x38, 0xdb, 0x47, 0x81, 0x3f, 0x8f, 0x0f, 0xb1, 0xc0, 0x9f,
-	0x77, 0xff, 0xa9, 0x63, 0xf7, 0x4c, 0x8e, 0x2e, 0x76, 0x86, 0x72, 0x6a, 0xa6, 0xb0, 0xa3, 0x18,
-	0xe9, 0xbf, 0x13, 0xac, 0xf9, 0xd1, 0xb2, 0x4f, 0xa1, 0xe0, 0xb7, 0xd8, 0x29, 0x70, 0xd7, 0xca,
-	0x4c, 0xbd, 0x73, 0xcc, 0x0e, 0x9f, 0x66, 0x63, 0xc9, 0x97, 0x08, 0xe1, 0x6b, 0x3c, 0x89, 0x41,
-	0x59, 0xb2, 0x99, 0x6c, 0xbf, 0x37, 0xab, 0xb1, 0x79, 0xde, 0xb2, 0xda, 0x16, 0xfb, 0x06, 0xf8,
-	0xc5, 0x35, 0x62, 0x11, 0xb2, 0x7a, 0x12, 0x98, 0xea, 0xda, 0x66, 0x2d, 0x6b, 0x9c, 0xc7, 0x8d,
-	0x8d, 0xf7, 0x94, 0x3b, 0xee, 0x05, 0x4a, 0x3d, 0x9e, 0xd0, 0x1d, 0xc6, 0x1e, 0x99, 0x16, 0x58,
-	0x9a, 0xe6, 0x2b, 0xec, 0xf7, 0x38, 0x0f, 0x87, 0x67, 0xfe, 0xd8, 0x6f, 0x51, 0xd1, 0x69, 0xe2,
-	0xce, 0x93, 0x7d, 0x78, 0xe4, 0x6b, 0xd4, 0xa2, 0xc8, 0xf5, 0x88, 0x87, 0x38, 0x8c, 0xc2, 0xb3,
-	0xad, 0xce, 0x8e, 0x63, 0xdf, 0xa5, 0x13, 0x60, 0x29, 0xd2, 0x1b, 0x1c, 0x65, 0x91, 0xd2, 0x09,
-	0xe5, 0x87, 0x7b, 0x89, 0xd2, 0x80, 0x82, 0xfb, 0xce, 0xae, 0xbe, 0xa4, 0x1d, 0x64, 0x41, 0xf6,
-	0x07, 0x14, 0xfc, 0x7f, 0x35, 0x56, 0x84, 0x0f, 0x51, 0x1b, 0x50, 0x90, 0xab, 0x1a, 0x2b, 0x90,
-	0xde, 0xa0, 0x91, 0x42, 0x7a, 0x78, 0x35, 0x56, 0xee, 0xab, 0xd6, 0xe3, 0x7c, 0x20, 0xdc, 0xa9,
-	0x67, 0x39, 0x37, 0xb9, 0x0f, 0xba, 0x8f, 0x46, 0xa2, 0xce, 0xb5, 0x31, 0x4e, 0x13, 0xb1, 0xac,
-	0x8d, 0x70, 0x9e, 0x88, 0xe4, 0x71, 0x89, 0x8c, 0x70, 0x9c, 0xd5, 0xda, 0x02, 0x52, 0x7e, 0xb9,
-	0x5d, 0xe2, 0x93, 0x25, 0xea, 0x7d, 0x34, 0xec, 0xf7, 0x52, 0x4d, 0x0b, 0x30, 0x79, 0xd4, 0x7c,
-	0x2e, 0x45, 0xf4, 0xf0, 0x6a, 0xad, 0x80, 0x19, 0xe1, 0x28, 0xa5, 0xc5, 0x5c, 0xdb, 0x5a, 0x81,
-	0x78, 0x89, 0x93, 0x45, 0x75, 0x6f, 0x02, 0xf6, 0x95, 0xec, 0xde, 0x9e, 0x6d, 0x8f, 0xa7, 0x57,
-	0x7f, 0x90, 0x19, 0xf8, 0xf7, 0xcf, 0xed, 0xbb, 0x5b, 0x8c, 0xb6, 0xc5, 0xce, 0x50, 0x8f, 0x62,
-	0x65, 0x36, 0x73, 0x80, 0xe4, 0x8f, 0xb6, 0x78, 0x8b, 0x5a, 0x0e, 0xf2, 0x1d, 0xf6, 0x22, 0x90,
-	0xb7, 0xb9, 0xf9, 0xfb, 0x60, 0x29, 0xfe, 0xb7, 0x8f, 0xa3, 0xef, 0x99, 0x41, 0x78, 0x21, 0x58,
-	0x9b, 0x3e, 0x89, 0xcf, 0x47, 0xff, 0x12, 0xe5, 0x08, 0x23, 0xbc, 0x5a, 0xe5, 0x21, 0x3f, 0x45,
-	0x35, 0x45, 0x1e, 0x45, 0xe7, 0xa3, 0x7e, 0x81, 0xd2, 0xd0, 0xf0, 0xd7, 0xf9, 0xeb, 0x0e, 0x0d,
-	0x7f, 0xbd, 0x9f, 0xdf, 0x6b, 0xd4, 0x86, 0x86, 0xff, 0x98, 0x91, 0x9a, 0x50, 0xaf, 0x8b, 0xd1,
-	0xff, 0x1c, 0x0d, 0xcb, 0xed, 0xdc, 0x08, 0xcf, 0xec, 0xd0, 0xad, 0x11, 0xd6, 0xc9, 0x8f, 0xbc,
-	0xfa, 0xe5, 0xe8, 0xea, 0x36, 0x0a, 0x17, 0x23, 0xe5, 0x6a, 0x57, 0x5a, 0xbf, 0xfa, 0x37, 0x00,
-	0x00, 0xff, 0xff, 0x19, 0xe7, 0x0a, 0xa4, 0x8d, 0x0e, 0x00, 0x00,
-}
-
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
@@ -850,9 +786,8 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
-// CasbinClient is the client API for Casbin service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+// Client API for Casbin service
+
 type CasbinClient interface {
 	NewEnforcer(ctx context.Context, in *NewEnforcerRequest, opts ...grpc.CallOption) (*NewEnforcerReply, error)
 	NewAdapter(ctx context.Context, in *NewAdapterRequest, opts ...grpc.CallOption) (*NewAdapterReply, error)
@@ -903,7 +838,7 @@ func NewCasbinClient(cc *grpc.ClientConn) CasbinClient {
 
 func (c *casbinClient) NewEnforcer(ctx context.Context, in *NewEnforcerRequest, opts ...grpc.CallOption) (*NewEnforcerReply, error) {
 	out := new(NewEnforcerReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/NewEnforcer", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/NewEnforcer", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -912,7 +847,7 @@ func (c *casbinClient) NewEnforcer(ctx context.Context, in *NewEnforcerRequest, 
 
 func (c *casbinClient) NewAdapter(ctx context.Context, in *NewAdapterRequest, opts ...grpc.CallOption) (*NewAdapterReply, error) {
 	out := new(NewAdapterReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/NewAdapter", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/NewAdapter", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -921,7 +856,7 @@ func (c *casbinClient) NewAdapter(ctx context.Context, in *NewAdapterRequest, op
 
 func (c *casbinClient) Enforce(ctx context.Context, in *EnforceRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/Enforce", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/Enforce", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -930,7 +865,7 @@ func (c *casbinClient) Enforce(ctx context.Context, in *EnforceRequest, opts ...
 
 func (c *casbinClient) LoadPolicy(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyReply, error) {
 	out := new(EmptyReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/LoadPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/LoadPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -939,7 +874,7 @@ func (c *casbinClient) LoadPolicy(ctx context.Context, in *EmptyRequest, opts ..
 
 func (c *casbinClient) SavePolicy(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*EmptyReply, error) {
 	out := new(EmptyReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/SavePolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/SavePolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -948,7 +883,7 @@ func (c *casbinClient) SavePolicy(ctx context.Context, in *EmptyRequest, opts ..
 
 func (c *casbinClient) AddPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/AddPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/AddPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -957,7 +892,7 @@ func (c *casbinClient) AddPolicy(ctx context.Context, in *PolicyRequest, opts ..
 
 func (c *casbinClient) AddNamedPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/AddNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/AddNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -966,7 +901,7 @@ func (c *casbinClient) AddNamedPolicy(ctx context.Context, in *PolicyRequest, op
 
 func (c *casbinClient) RemovePolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemovePolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemovePolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -975,7 +910,7 @@ func (c *casbinClient) RemovePolicy(ctx context.Context, in *PolicyRequest, opts
 
 func (c *casbinClient) RemoveNamedPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -984,7 +919,7 @@ func (c *casbinClient) RemoveNamedPolicy(ctx context.Context, in *PolicyRequest,
 
 func (c *casbinClient) RemoveFilteredPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveFilteredPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveFilteredPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -993,7 +928,7 @@ func (c *casbinClient) RemoveFilteredPolicy(ctx context.Context, in *FilteredPol
 
 func (c *casbinClient) RemoveFilteredNamedPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveFilteredNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveFilteredNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1002,7 +937,7 @@ func (c *casbinClient) RemoveFilteredNamedPolicy(ctx context.Context, in *Filter
 
 func (c *casbinClient) GetPolicy(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1011,7 +946,7 @@ func (c *casbinClient) GetPolicy(ctx context.Context, in *EmptyRequest, opts ...
 
 func (c *casbinClient) GetNamedPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1020,7 +955,7 @@ func (c *casbinClient) GetNamedPolicy(ctx context.Context, in *PolicyRequest, op
 
 func (c *casbinClient) GetFilteredPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetFilteredPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetFilteredPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1029,7 +964,7 @@ func (c *casbinClient) GetFilteredPolicy(ctx context.Context, in *FilteredPolicy
 
 func (c *casbinClient) GetFilteredNamedPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetFilteredNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetFilteredNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1038,7 +973,7 @@ func (c *casbinClient) GetFilteredNamedPolicy(ctx context.Context, in *FilteredP
 
 func (c *casbinClient) AddGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/AddGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/AddGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1047,7 +982,7 @@ func (c *casbinClient) AddGroupingPolicy(ctx context.Context, in *PolicyRequest,
 
 func (c *casbinClient) AddNamedGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/AddNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/AddNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1056,7 +991,7 @@ func (c *casbinClient) AddNamedGroupingPolicy(ctx context.Context, in *PolicyReq
 
 func (c *casbinClient) RemoveGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1065,7 +1000,7 @@ func (c *casbinClient) RemoveGroupingPolicy(ctx context.Context, in *PolicyReque
 
 func (c *casbinClient) RemoveNamedGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1074,7 +1009,7 @@ func (c *casbinClient) RemoveNamedGroupingPolicy(ctx context.Context, in *Policy
 
 func (c *casbinClient) RemoveFilteredGroupingPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveFilteredGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveFilteredGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1083,7 +1018,7 @@ func (c *casbinClient) RemoveFilteredGroupingPolicy(ctx context.Context, in *Fil
 
 func (c *casbinClient) RemoveFilteredNamedGroupingPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/RemoveFilteredNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/RemoveFilteredNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1092,7 +1027,7 @@ func (c *casbinClient) RemoveFilteredNamedGroupingPolicy(ctx context.Context, in
 
 func (c *casbinClient) GetGroupingPolicy(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1101,7 +1036,7 @@ func (c *casbinClient) GetGroupingPolicy(ctx context.Context, in *EmptyRequest, 
 
 func (c *casbinClient) GetNamedGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1110,7 +1045,7 @@ func (c *casbinClient) GetNamedGroupingPolicy(ctx context.Context, in *PolicyReq
 
 func (c *casbinClient) GetFilteredGroupingPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetFilteredGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetFilteredGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1119,7 +1054,7 @@ func (c *casbinClient) GetFilteredGroupingPolicy(ctx context.Context, in *Filter
 
 func (c *casbinClient) GetFilteredNamedGroupingPolicy(ctx context.Context, in *FilteredPolicyRequest, opts ...grpc.CallOption) (*Array2DReply, error) {
 	out := new(Array2DReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetFilteredNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetFilteredNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1128,7 +1063,7 @@ func (c *casbinClient) GetFilteredNamedGroupingPolicy(ctx context.Context, in *F
 
 func (c *casbinClient) GetAllSubjects(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllSubjects", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllSubjects", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1137,7 +1072,7 @@ func (c *casbinClient) GetAllSubjects(ctx context.Context, in *EmptyRequest, opt
 
 func (c *casbinClient) GetAllNamedSubjects(ctx context.Context, in *SimpleGetRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllNamedSubjects", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllNamedSubjects", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1146,7 +1081,7 @@ func (c *casbinClient) GetAllNamedSubjects(ctx context.Context, in *SimpleGetReq
 
 func (c *casbinClient) GetAllObjects(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllObjects", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllObjects", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1155,7 +1090,7 @@ func (c *casbinClient) GetAllObjects(ctx context.Context, in *EmptyRequest, opts
 
 func (c *casbinClient) GetAllNamedObjects(ctx context.Context, in *SimpleGetRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllNamedObjects", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllNamedObjects", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1164,7 +1099,7 @@ func (c *casbinClient) GetAllNamedObjects(ctx context.Context, in *SimpleGetRequ
 
 func (c *casbinClient) GetAllActions(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllActions", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllActions", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1173,7 +1108,7 @@ func (c *casbinClient) GetAllActions(ctx context.Context, in *EmptyRequest, opts
 
 func (c *casbinClient) GetAllNamedActions(ctx context.Context, in *SimpleGetRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllNamedActions", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllNamedActions", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1182,7 +1117,7 @@ func (c *casbinClient) GetAllNamedActions(ctx context.Context, in *SimpleGetRequ
 
 func (c *casbinClient) GetAllRoles(ctx context.Context, in *EmptyRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllRoles", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllRoles", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1191,7 +1126,7 @@ func (c *casbinClient) GetAllRoles(ctx context.Context, in *EmptyRequest, opts .
 
 func (c *casbinClient) GetAllNamedRoles(ctx context.Context, in *SimpleGetRequest, opts ...grpc.CallOption) (*ArrayReply, error) {
 	out := new(ArrayReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/GetAllNamedRoles", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/GetAllNamedRoles", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1200,7 +1135,7 @@ func (c *casbinClient) GetAllNamedRoles(ctx context.Context, in *SimpleGetReques
 
 func (c *casbinClient) HasPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/HasPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/HasPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1209,7 +1144,7 @@ func (c *casbinClient) HasPolicy(ctx context.Context, in *PolicyRequest, opts ..
 
 func (c *casbinClient) HasNamedPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/HasNamedPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/HasNamedPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1218,7 +1153,7 @@ func (c *casbinClient) HasNamedPolicy(ctx context.Context, in *PolicyRequest, op
 
 func (c *casbinClient) HasGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/HasGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/HasGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1227,14 +1162,15 @@ func (c *casbinClient) HasGroupingPolicy(ctx context.Context, in *PolicyRequest,
 
 func (c *casbinClient) HasNamedGroupingPolicy(ctx context.Context, in *PolicyRequest, opts ...grpc.CallOption) (*BoolReply, error) {
 	out := new(BoolReply)
-	err := c.cc.Invoke(ctx, "/proto.Casbin/HasNamedGroupingPolicy", in, out, opts...)
+	err := grpc.Invoke(ctx, "/proto.Casbin/HasNamedGroupingPolicy", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// CasbinServer is the server API for Casbin service.
+// Server API for Casbin service
+
 type CasbinServer interface {
 	NewEnforcer(context.Context, *NewEnforcerRequest) (*NewEnforcerReply, error)
 	NewAdapter(context.Context, *NewAdapterRequest) (*NewAdapterReply, error)
@@ -1273,122 +1209,6 @@ type CasbinServer interface {
 	HasNamedPolicy(context.Context, *PolicyRequest) (*BoolReply, error)
 	HasGroupingPolicy(context.Context, *PolicyRequest) (*BoolReply, error)
 	HasNamedGroupingPolicy(context.Context, *PolicyRequest) (*BoolReply, error)
-}
-
-// UnimplementedCasbinServer can be embedded to have forward compatible implementations.
-type UnimplementedCasbinServer struct {
-}
-
-func (*UnimplementedCasbinServer) NewEnforcer(ctx context.Context, req *NewEnforcerRequest) (*NewEnforcerReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewEnforcer not implemented")
-}
-func (*UnimplementedCasbinServer) NewAdapter(ctx context.Context, req *NewAdapterRequest) (*NewAdapterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method NewAdapter not implemented")
-}
-func (*UnimplementedCasbinServer) Enforce(ctx context.Context, req *EnforceRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Enforce not implemented")
-}
-func (*UnimplementedCasbinServer) LoadPolicy(ctx context.Context, req *EmptyRequest) (*EmptyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoadPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) SavePolicy(ctx context.Context, req *EmptyRequest) (*EmptyReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SavePolicy not implemented")
-}
-func (*UnimplementedCasbinServer) AddPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) AddNamedPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemovePolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemovePolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveNamedPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveFilteredPolicy(ctx context.Context, req *FilteredPolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFilteredPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveFilteredNamedPolicy(ctx context.Context, req *FilteredPolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFilteredNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetPolicy(ctx context.Context, req *EmptyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetNamedPolicy(ctx context.Context, req *PolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetFilteredPolicy(ctx context.Context, req *FilteredPolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFilteredPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetFilteredNamedPolicy(ctx context.Context, req *FilteredPolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFilteredNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) AddGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) AddNamedGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddNamedGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveNamedGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveNamedGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveFilteredGroupingPolicy(ctx context.Context, req *FilteredPolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFilteredGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) RemoveFilteredNamedGroupingPolicy(ctx context.Context, req *FilteredPolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveFilteredNamedGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetGroupingPolicy(ctx context.Context, req *EmptyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetNamedGroupingPolicy(ctx context.Context, req *PolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNamedGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetFilteredGroupingPolicy(ctx context.Context, req *FilteredPolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFilteredGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetFilteredNamedGroupingPolicy(ctx context.Context, req *FilteredPolicyRequest) (*Array2DReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetFilteredNamedGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllSubjects(ctx context.Context, req *EmptyRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllSubjects not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllNamedSubjects(ctx context.Context, req *SimpleGetRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllNamedSubjects not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllObjects(ctx context.Context, req *EmptyRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllObjects not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllNamedObjects(ctx context.Context, req *SimpleGetRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllNamedObjects not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllActions(ctx context.Context, req *EmptyRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllActions not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllNamedActions(ctx context.Context, req *SimpleGetRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllNamedActions not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllRoles(ctx context.Context, req *EmptyRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllRoles not implemented")
-}
-func (*UnimplementedCasbinServer) GetAllNamedRoles(ctx context.Context, req *SimpleGetRequest) (*ArrayReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllNamedRoles not implemented")
-}
-func (*UnimplementedCasbinServer) HasPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HasPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) HasNamedPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HasNamedPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) HasGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HasGroupingPolicy not implemented")
-}
-func (*UnimplementedCasbinServer) HasNamedGroupingPolicy(ctx context.Context, req *PolicyRequest) (*BoolReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HasNamedGroupingPolicy not implemented")
 }
 
 func RegisterCasbinServer(s *grpc.Server, srv CasbinServer) {
@@ -2216,4 +2036,68 @@ var _Casbin_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "casbin.proto",
+}
+
+func init() { proto.RegisterFile("casbin.proto", fileDescriptor_casbin_1e7077875394d387) }
+
+var fileDescriptor_casbin_1e7077875394d387 = []byte{
+	// 928 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x6d, 0x6f, 0xe2, 0x46,
+	0x10, 0x0e, 0xe4, 0xe5, 0x8e, 0x81, 0x24, 0xb0, 0xe4, 0xa8, 0x83, 0xd2, 0x88, 0x5a, 0xad, 0x8a,
+	0xd4, 0x0a, 0xe9, 0x68, 0xaf, 0xd7, 0x9e, 0x74, 0x6a, 0x20, 0x4d, 0xa1, 0x55, 0x2f, 0x87, 0xcc,
+	0xa5, 0xdf, 0x17, 0xef, 0x24, 0x75, 0x65, 0x6c, 0x77, 0x6d, 0xee, 0x82, 0xd4, 0x3f, 0xd2, 0x8f,
+	0xfd, 0x25, 0xfd, 0x6b, 0x95, 0x77, 0xbd, 0x64, 0x4d, 0x21, 0x8d, 0x1d, 0x3e, 0xe1, 0x1d, 0x66,
+	0x9e, 0x67, 0x66, 0xe7, 0x99, 0xb1, 0xa1, 0x62, 0xd3, 0x70, 0xe2, 0x78, 0x9d, 0x80, 0xfb, 0x91,
+	0x4f, 0x76, 0xc5, 0x8f, 0xf9, 0x27, 0x90, 0x4b, 0xfc, 0x70, 0xe1, 0x5d, 0xfb, 0xdc, 0x46, 0x6e,
+	0xe1, 0x1f, 0x33, 0x0c, 0x23, 0x72, 0x02, 0xa5, 0xa9, 0xcf, 0xd0, 0x7d, 0x87, 0xb7, 0x91, 0x51,
+	0x68, 0x15, 0xda, 0x25, 0xeb, 0xce, 0x40, 0x3e, 0x85, 0x7d, 0xca, 0x68, 0x10, 0x21, 0x1f, 0x52,
+	0x8f, 0xb9, 0x68, 0x14, 0x85, 0x47, 0xda, 0x48, 0x4c, 0xa8, 0x60, 0x02, 0x7b, 0x49, 0xa7, 0x68,
+	0x6c, 0x0b, 0xa7, 0x94, 0xcd, 0xfc, 0x12, 0xaa, 0x29, 0xf6, 0xc0, 0x9d, 0x13, 0x03, 0x9e, 0xfc,
+	0x26, 0x10, 0x78, 0xc2, 0xac, 0x8e, 0xe6, 0x3f, 0x05, 0xa8, 0x5d, 0xe2, 0x87, 0x9e, 0xa4, 0x51,
+	0xb9, 0xb6, 0xa0, 0x9c, 0x10, 0x0b, 0x1a, 0x19, 0xa3, 0x9b, 0xc8, 0x29, 0x00, 0xe3, 0xce, 0xfb,
+	0xc4, 0x41, 0x26, 0xab, 0x59, 0xe2, 0x7a, 0x6c, 0xdf, 0xf3, 0xd0, 0x8e, 0xc6, 0x11, 0x77, 0xbc,
+	0x9b, 0x24, 0xd5, 0xb4, 0x31, 0xe6, 0x61, 0x93, 0x71, 0x80, 0xb6, 0x73, 0xed, 0x20, 0x33, 0x76,
+	0x5a, 0x85, 0xf6, 0x53, 0x4b, 0x37, 0xc5, 0x1e, 0x11, 0x9d, 0xb8, 0x38, 0xe2, 0x78, 0xed, 0xdc,
+	0x1a, 0xbb, 0x32, 0x13, 0xcd, 0x64, 0x7e, 0x01, 0x87, 0x7a, 0x01, 0xf7, 0x97, 0x6b, 0xc1, 0x41,
+	0x72, 0x33, 0xaa, 0xd4, 0x36, 0x1c, 0xaa, 0xeb, 0x1b, 0xa6, 0x62, 0x96, 0xcd, 0xa4, 0x01, 0x7b,
+	0x01, 0xe5, 0x74, 0x1a, 0x1a, 0xc5, 0xd6, 0x76, 0xbb, 0x64, 0x25, 0x27, 0xf3, 0x63, 0x28, 0xf5,
+	0x7d, 0xdf, 0x95, 0xd4, 0x55, 0xd8, 0xe6, 0x18, 0x0a, 0x88, 0xa7, 0x56, 0xfc, 0x68, 0xb6, 0xa1,
+	0x72, 0x31, 0x0d, 0xa2, 0xb9, 0x22, 0x5c, 0x9f, 0x5c, 0x05, 0x20, 0xf1, 0x0c, 0xdc, 0xb9, 0x79,
+	0x03, 0xfb, 0x23, 0xdf, 0x75, 0xec, 0x79, 0xf6, 0x4c, 0x8f, 0x60, 0x37, 0x78, 0x37, 0x0f, 0x54,
+	0x5f, 0xe4, 0x41, 0xcb, 0x7f, 0x3b, 0x95, 0xbf, 0x05, 0xd5, 0xb1, 0x33, 0x0d, 0x5c, 0x1c, 0x60,
+	0xb4, 0x21, 0x2e, 0xd3, 0x04, 0xe8, 0x71, 0x4e, 0x65, 0x29, 0xb1, 0x0f, 0x8d, 0x4f, 0x46, 0x41,
+	0x10, 0xcb, 0x83, 0xf9, 0x57, 0x01, 0x9e, 0xfd, 0xe8, 0xb8, 0x11, 0x72, 0x64, 0x9b, 0xad, 0xf4,
+	0x14, 0xe0, 0xda, 0x41, 0x97, 0xfd, 0xe4, 0x31, 0xbc, 0x15, 0xca, 0xdb, 0xb5, 0x34, 0x4b, 0x2c,
+	0x2a, 0x71, 0xfa, 0x95, 0xba, 0x33, 0x0c, 0x8d, 0x1d, 0x91, 0x95, 0x6e, 0x32, 0x6d, 0x38, 0xbc,
+	0x0a, 0x91, 0x5b, 0xbe, 0x9b, 0x43, 0x28, 0x04, 0x76, 0x66, 0x21, 0xf2, 0x24, 0x27, 0xf1, 0x1c,
+	0xdb, 0xb8, 0xef, 0xaa, 0x89, 0x15, 0xcf, 0x66, 0x08, 0xb5, 0x11, 0xf2, 0xa9, 0x13, 0x86, 0x8e,
+	0xef, 0x6d, 0x86, 0xa6, 0x05, 0xe5, 0x60, 0x01, 0xa9, 0x1a, 0xad, 0x9b, 0xcc, 0x9f, 0xa1, 0x22,
+	0x3a, 0xd3, 0xfd, 0x41, 0xf6, 0xe6, 0x33, 0x28, 0xb2, 0xae, 0x68, 0x4c, 0xb9, 0xfb, 0x4c, 0xee,
+	0xb1, 0x8e, 0xee, 0xd0, 0x61, 0x56, 0x91, 0x75, 0x9b, 0x75, 0x28, 0x30, 0x72, 0x00, 0x45, 0xf6,
+	0x3c, 0x69, 0x62, 0x91, 0x3d, 0xef, 0xfe, 0x5d, 0x87, 0xbd, 0x73, 0xb1, 0x00, 0xc9, 0x39, 0x94,
+	0xb5, 0xad, 0x43, 0x8e, 0x13, 0xa4, 0xff, 0xee, 0xc1, 0xe6, 0x47, 0xab, 0xfe, 0x8a, 0x05, 0xbf,
+	0x45, 0xce, 0x00, 0xee, 0x46, 0x99, 0x18, 0x77, 0x8e, 0xe9, 0xf5, 0xd4, 0x6c, 0xac, 0xf8, 0x47,
+	0x22, 0x7c, 0x0d, 0x4f, 0x12, 0x50, 0xa2, 0x8a, 0x49, 0xcf, 0x7b, 0xb3, 0x9a, 0x98, 0x17, 0x23,
+	0x6b, 0x6e, 0x91, 0x6f, 0x00, 0x7e, 0xf1, 0x69, 0x22, 0x42, 0x52, 0x57, 0x81, 0xda, 0xd4, 0x36,
+	0x6b, 0x69, 0xe3, 0x22, 0x6e, 0x4c, 0xdf, 0x63, 0xe6, 0xb8, 0x17, 0x50, 0xea, 0x31, 0x45, 0x77,
+	0x94, 0x78, 0xa4, 0x46, 0x60, 0x65, 0x9a, 0xaf, 0xe0, 0xa0, 0xc7, 0x58, 0xbc, 0x5e, 0xb3, 0xc7,
+	0x7e, 0x0b, 0x15, 0x0b, 0xa7, 0xfe, 0x22, 0xd9, 0x87, 0x47, 0xbe, 0x86, 0x9a, 0x8c, 0xcc, 0x47,
+	0x3c, 0x84, 0x23, 0x19, 0x9e, 0x1e, 0x75, 0x72, 0x92, 0xf8, 0xae, 0xdc, 0x00, 0x2b, 0x91, 0xde,
+	0xc0, 0x71, 0x1a, 0x49, 0x4f, 0x28, 0x3b, 0xdc, 0x4b, 0x28, 0x0d, 0x30, 0xba, 0xaf, 0x77, 0xf5,
+	0x15, 0xe3, 0x20, 0x2e, 0xe4, 0x60, 0x80, 0xd1, 0xff, 0xdf, 0xc6, 0x9a, 0xf0, 0x21, 0xd4, 0x06,
+	0x18, 0x65, 0xba, 0x8d, 0x35, 0x48, 0x6f, 0xa0, 0xa1, 0x21, 0x3d, 0xfc, 0x36, 0xd6, 0xd6, 0x55,
+	0xeb, 0x31, 0x36, 0xe0, 0xfe, 0x2c, 0x70, 0xbc, 0x9b, 0xcc, 0x8d, 0xee, 0x43, 0x43, 0xa9, 0x33,
+	0x37, 0xc6, 0x99, 0x12, 0x4b, 0x6e, 0x84, 0x0b, 0x25, 0x92, 0xc7, 0x25, 0x32, 0x82, 0x93, 0xb4,
+	0xd6, 0x96, 0x90, 0xb2, 0xcb, 0xed, 0x0a, 0x3e, 0x59, 0xa1, 0xde, 0x47, 0xc3, 0x7e, 0x2f, 0xd4,
+	0xb4, 0x04, 0x93, 0x45, 0xcd, 0x17, 0x42, 0x44, 0x0f, 0xbf, 0xad, 0x35, 0x30, 0x23, 0x38, 0xd6,
+	0xb4, 0x98, 0xa9, 0xac, 0x35, 0x88, 0x57, 0x70, 0xba, 0xac, 0xee, 0x4d, 0xc0, 0xbe, 0x12, 0xd3,
+	0xdb, 0x73, 0xdd, 0xf1, 0x6c, 0xf2, 0x3b, 0xda, 0x51, 0x78, 0xff, 0xde, 0xbe, 0xfb, 0x8a, 0x31,
+	0xb7, 0xc8, 0x39, 0xd4, 0x65, 0xac, 0xc8, 0x66, 0x01, 0xa0, 0xde, 0x68, 0xcb, 0x5f, 0x51, 0xab,
+	0x41, 0xbe, 0x83, 0x7d, 0x09, 0xf2, 0x36, 0x33, 0x7f, 0x1f, 0x88, 0xc6, 0xff, 0xf6, 0x71, 0xf4,
+	0x3d, 0x3b, 0x8a, 0x3f, 0x08, 0x72, 0xd3, 0xab, 0xf8, 0x6c, 0xf4, 0x2f, 0xa1, 0x2c, 0x31, 0xe2,
+	0x4f, 0xab, 0x2c, 0xe4, 0x67, 0x50, 0xd5, 0xc8, 0x65, 0x74, 0x36, 0xea, 0x17, 0x50, 0x1a, 0xd2,
+	0x30, 0xcf, 0x5b, 0x77, 0x48, 0xc3, 0x7c, 0x2f, 0xbf, 0xd7, 0x50, 0x1b, 0xd2, 0xf0, 0x31, 0x2b,
+	0x55, 0x51, 0xe7, 0xc5, 0xe8, 0x7f, 0x0e, 0x0d, 0xc7, 0xef, 0xdc, 0xf0, 0xc0, 0xee, 0xe0, 0x2d,
+	0x8d, 0xef, 0x29, 0x94, 0x5e, 0xfd, 0xb2, 0xfc, 0x74, 0x1b, 0xc5, 0x87, 0x51, 0x61, 0xb2, 0x27,
+	0xac, 0x5f, 0xfd, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x4f, 0xfb, 0x7e, 0xfd, 0xd3, 0x0e, 0x00, 0x00,
 }

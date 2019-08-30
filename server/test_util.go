@@ -25,7 +25,7 @@ import (
 type testEngine struct {
 	s   *Server
 	ctx context.Context
-	h   int32
+	h   string
 }
 
 func newTestEngine(t *testing.T, from, connectStr string, modelLoc string) *testEngine {
@@ -42,7 +42,7 @@ func newTestEngine(t *testing.T, from, connectStr string, modelLoc string) *test
 		t.Fatal(err)
 	}
 
-	resp, err := s.NewEnforcer(ctx, &pb.NewEnforcerRequest{ModelText: string(modelText), AdapterHandle: 0})
+	resp, err := s.NewEnforcer(ctx, &pb.NewEnforcerRequest{ModelText: string(modelText), AdapterHandle: ""})
 	if err != nil {
 		t.Fatal(err)
 	}
