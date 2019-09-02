@@ -65,7 +65,6 @@ func (s *Server) addAdapter(a persist.Adapter, handle string) {
 }
 
 func (s *Server) NewEnforcer(ctx context.Context, in *pb.NewEnforcerRequest) (*pb.NewEnforcerReply, error) {
-	log.Println("++++++++++++++++ NewEnforcer")
 	var a persist.Adapter
 	var m model.Model
 	var e *casbin.Enforcer
@@ -77,6 +76,7 @@ func (s *Server) NewEnforcer(ctx context.Context, in *pb.NewEnforcerRequest) (*p
 	}
 	_, err = s.getEnforcer(handler)
 	if err != nil {
+		log.Println("Create New Enforcer")
 		a, err = s.getAdapter(in.AdapterHandle)
 		if err != nil {
 			return &pb.NewEnforcerReply{Handler: ""}, err
@@ -96,7 +96,6 @@ func (s *Server) NewEnforcer(ctx context.Context, in *pb.NewEnforcerRequest) (*p
 }
 
 func (s *Server) NewAdapter(ctx context.Context, in *pb.NewAdapterRequest) (*pb.NewAdapterReply, error) {
-	log.Println("++++++++++++++++ NewAdapter")
 	var a persist.Adapter
 	var err error
 
@@ -106,6 +105,7 @@ func (s *Server) NewAdapter(ctx context.Context, in *pb.NewAdapterRequest) (*pb.
 	}
 	_, err = s.getAdapter(handler)
 	if err != nil {
+		log.Println("Create New Adapter")
 		a, err = newAdapter(in)
 		if err != nil {
 			return nil, err
